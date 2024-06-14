@@ -677,69 +677,9 @@ dr = Image.open('dr.png')
 st.image(dr)
 
 #======================================== tabs ========================================# 
-tab1, tab2, tab3 = st.tabs(['Configuration', 'Simulation', 'Visualization'])
- 
-with tab1:
-    st.subheader('Upload CSV')
-    uploaded_file = st.file_uploader("Upload CSV File Including All Features", type="csv", key=100000)    
-    
-    if uploaded_file is not None:
-        dataframe = pd.read_csv(uploaded_file)
-        dataframe.to_csv('feature.csv',index=False)
-        st.write(dataframe)    
-        
-    is_red = st.radio("", ("upload", "input"), horizontal=True, args=[1, 0])
-
-    if is_red == "upload":
-        st.subheader('Upload Configuration!')
-        uploaded_config = st.file_uploader("Upload CSV File Including Target_Name And Deployment_ID And Optimization_Direction", type="csv", key=100001)           
-        if uploaded_config is not None:
-            dataframe = pd.read_csv(uploaded_config)
-            dataframe.to_csv('config.csv',index=False)
-            st.write(dataframe)  
-    else:    
-        target_names = [] 
-        deployment_ids = []   
-        directions = []
+tab1, tab2 = st.tabs(['Simulation', 'Visualization'])
   
-        target_number = st.selectbox(
-            'Select Target Number',
-            range(1,31), key=10000
-        )    
-
-        col1, col2, col3, col4 = st.columns(4)       
-
-        with col2:
-            st.subheader('Target Name')  
-        with col3:
-            st.subheader('Deployment ID')          
-        with col4:
-            st.subheader('Optimization Direction')  
-        
-        for i in range(1,target_number+1):
-            col1, col2, col3, col4 = st.columns(4)
-            with col1:
-                st.subheader('Target '+str(i))         
-            with col2:
-                target_name = st.text_input('', key=i+100)  
-                if type(target_name) is str:
-                    target_names.append(target_name)
-            with col3:
-                deployment_id = st.text_input('', key=i+200)   
-                if type(deployment_id) is str:
-                    deployment_ids.append(deployment_id)
-            with col4:
-                direction = st.selectbox(
-                    '',
-                    ['minimize','maximize'], key=i+300
-                )    
-                directions.append(direction)
-                    
-        if st.button('Save Configuration', key=0):
-            df = save_target_deployment_id(target_names,deployment_ids,directions)     
-            st.write(df)       
-       
-with tab2:     
+with tab1:     
     if os.path.isfile('config.csv'):
         config = pd.read_csv('config.csv')
         df_feature = pd.read_csv('feature.csv')
@@ -800,7 +740,7 @@ with tab2:
                 trial_pareto.to_csv('trial_pareto.csv',index=False)
                 st.write('Simulation Finished!')
                 
-with tab3:     
+with tab2:     
     if os.path.isfile('trial_all.csv'):
         trial_all = pd.read_csv('trial_all.csv') 
         trial_pareto = pd.read_csv('trial_pareto.csv').sort_values(targets[0])
